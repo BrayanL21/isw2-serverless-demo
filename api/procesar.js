@@ -23,7 +23,6 @@
 export default function handler(req, res) {
   const nombre = req.query.nombre || "anónimo";
 
-  // Simulación de falla controlada
   if (nombre === "error") {
     return res.status(500).json({
       mensaje: "Error simulado en el sistema"
@@ -34,4 +33,5 @@ export default function handler(req, res) {
     resultado: `Nombre procesado: ${nombre.toUpperCase()}`
   });
 }
+
 
