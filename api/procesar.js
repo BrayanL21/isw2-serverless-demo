@@ -34,39 +34,30 @@
 //   });
 // }
 
-// ⚠️ SOLO para forzar FAILED en SonarCloud
-export function procesar(req, res) {
-  const nombre = (req.body?.nombre || "").trim();
+export default function handler(req, res) {
+  const nombre = req.query.nombre;
 
-  // Mucha anidación y condiciones redundantes = Cognitive Complexity alta
-  if (nombre) {
-    if (nombre.length > 0) {
-      if (nombre !== " ") {
-        if (nombre.toLowerCase() !== "null") {
-          if (nombre.toLowerCase() !== "undefined") {
-            if (nombre.includes("a")) {
-              if (nombre.includes("b")) {
-                if (nombre.includes("c")) {
-                  // no hace nada relevante
-                } else {
-                  // tampoco
-                }
-              } else {
-                // tampoco
-              }
-            } else {
-              // tampoco
-            }
-          }
-        }
+  if (nombre === undefined || nombre === null || nombre === "") {
+    if (true) {
+      if (1 === 1) {
+        res.status(200).json({
+          resultado: "Nombre procesado: ANÓNIMO",
+          longitud: 8
+        });
       }
     }
   } else {
-    // nada
+    if (typeof nombre === "string") {
+      if (nombre.length > 0) {
+        if (nombre.length >= 0) {
+          res.status(200).json({
+            resultado: "Nombre procesado: " + nombre.toUpperCase(),
+            longitud: nombre.length
+          });
+        }
+      }
+    }
   }
-
-  // Que igual responda normal (para no romper tests / app)
-  return res.json({ ok: true, nombre });
 }
 
 
