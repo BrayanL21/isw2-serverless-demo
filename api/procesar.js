@@ -62,16 +62,28 @@
 
 
 
-export default function handler(req, res) {
-  const nombre = req.query.nombre ?? "";
+// export default function handler(req, res) {
+//   const nombre = req.query.nombre ?? "";
 
-  const normalizado = String(nombre).trim();
-  const finalNombre = normalizado === "" ? "anónimo" : normalizado;
+//   const normalizado = String(nombre).trim();
+//   const finalNombre = normalizado === "" ? "anónimo" : normalizado;
 
-  const payload = {
-    resultado: `Nombre procesado: ${finalNombre.toUpperCase()}`,
-    longitud: finalNombre.length
-  };
+//   const payload = {
+//     resultado: `Nombre procesado: ${finalNombre.toUpperCase()}`,
+//     longitud: finalNombre.length
+//   };
 
-  return res.status(200).json(payload);
+//   return res.status(200).json(payload);
+// }
+export function procesar(req, res) {
+  const nombre = (req.body?.nombre || "").trim();
+
+  // validaciones simples (sin anidar 10 ifs)
+  if (!nombre) return res.json({ ok: true, nombre: "-" });
+
+  const invalido = ["null", "undefined"];
+  const lower = nombre.toLowerCase();
+  if (invalido.includes(lower)) return res.json({ ok: true, nombre: "-" });
+
+  return res.json({ ok: true, nombre });
 }
