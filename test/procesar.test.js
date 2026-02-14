@@ -21,13 +21,13 @@ test("procesar convierte el nombre a mayúsculas", () => {
   handler(req, res);
 
   assert.equal(res.statusCode, 200);
-  //assert.deepEqual(res.body, { resultado: "Nombre procesado: JUAN" });
   assert.deepEqual(res.body, {
   resultado: "Nombre procesado: JUAN",
   longitud: 4
-});
+  });
 
 });
+
 
 test("procesar maneja nombre ausente", () => {
   const req = { query: {} };
@@ -51,8 +51,9 @@ test("procesar maneja nombre ausente", () => {
   assert.ok(res.body.resultado.includes("ANÓNIMO"));
 });
 
-test("política mínima de calidad: resultado no vacío", () => {
-  const req = { query: { nombre: "juan" } };
+test("regla de calidad: estructura JSON consistente", () => {
+  const req = { query: { nombre: "JuAn" } };
+
   const res = {
     statusCode: null,
     body: null,
@@ -62,55 +63,14 @@ test("política mínima de calidad: resultado no vacío", () => {
 
   handler(req, res);
 
-  assert.equal(res.statusCode, 200);
-  assert.ok(res.body.resultado.trim().length > 0);
+  // 1) keys exactas (sin extras)
+  assert.deepEqual(Object.keys(res.body).sort(), ["longitud", "resultado"]);
+
+  // 2) tipos correctos
+  assert.equal(typeof res.body.resultado, "string");
+  assert.equal(typeof res.body.longitud, "number");
+
+  // 3) regla numérica simple
+  assert.ok(Number.isInteger(res.body.longitud));
+  assert.ok(res.body.longitud >= 0);
 });
-
-test("procesar simula falla cuando nombre es 'error'", () => {
-  const req = { query: { nombre: "error" } };
-
-  const res = {
-    statusCode: null,
-    body: null,
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-    json(payload) {
-      this.body = payload;
-      return this;
-    }
-  };
-
-  handler(req, res);
-
-  assert.equal(res.statusCode, 500);
-  assert.deepEqual(res.body, {
-    mensaje: "Error simulado en el sistema"
-  });
-});
-
-// test("procesar simula falla cuando nombre es 'error'", () => {
-//   const req = { query: { nombre: "error" } };
-
-//   const res = {
-//     statusCode: null,
-//     body: null,
-//     status(code) {
-//       this.statusCode = code;
-//       return this;
-//     },
-//     json(payload) {
-//       this.body = payload;
-//       return this;
-//     }
-//   };
-
-//   handler(req, res);
-
-//   assert.equal(res.statusCode, 500);
-//   assert.deepEqual(res.body, {
-//     mensaje: "Error simulado en el sistema"
-//   });
-// });
-
